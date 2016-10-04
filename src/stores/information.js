@@ -16,7 +16,14 @@ export const store = createStore(information);
  */
 export const mapStateToProps = (state) => {
     return {
-        user: store.getState()
+        user: store.getState(),
+        getValue: (target) => {
+            if(target === 'facebookUsername')
+                return store.getState().socials.facebookUsername
+
+            if(target === 'twitterUsername')
+                return store.getState().socials.twitterUsername
+        }
     }
 }
 
@@ -72,6 +79,20 @@ export const mapDispatchToProps = (dispatch) => {
         },
 
         /**
+         * Dispatching google username changed
+         *
+         * @param event
+         */
+        changedGoogleUsername: (event) => {
+            dispatch({
+                type: Action.GOOGLE_USERNAME_CHANGED,
+                payload: {
+                    username: event.target.value
+                }
+            })
+        },
+
+        /**
          * Dispatching mobile no changed
          *
          * @param event
@@ -102,8 +123,46 @@ export const mapDispatchToProps = (dispatch) => {
         /**
          * Dispatching show embeded code
          */
-        showEmbededCode: () => {
-            dispatch({type: Action.SHOW_EMBEDED_CODE})
+        showEmbededCode: (socials) => {
+            dispatch({
+                type: Action.SHOW_EMBEDED_CODE,
+                payload: {
+                    socials: socials
+                }
+            })
+        },
+
+        /**
+         * Dispatching social fields changed
+         */
+        socialFieldsChanged: (socials) => {
+            dispatch({
+                type: Action.SOCIAL_FIELDS_CHANGED,
+                payload: {
+                    socials: socials
+                }
+            })
+        },
+
+        /**
+         * Dispatch new social field
+         *
+         * @param social
+         */
+        addedNewSocialField: (social) => {
+            dispatch({
+                type: Action.ADDED_NEW_SOCIAL,
+                payload: {
+                    social: social
+                }
+            })
+
+            dispatch({
+                type: Action.ADDED_NEW_FIELD,
+                payload: {
+                    social: social
+                }
+            })
         }
     }
 }

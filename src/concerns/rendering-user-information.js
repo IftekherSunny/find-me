@@ -11,8 +11,9 @@ export default ({ user }) =>
         <div>
             About Me: { user.message } <br />
 
-            Facebook: { user.facebookUsername }  <br />
-            Twitter: { user.twitterUsername }  <br />
+            { user.socialFields.map( (value, index) => {
+                return <div key={index}>{ user.fields[value.target] + ":" + user.socials[value.target]} <br /></div>
+            })}
 
             Mobile: { user.mobileNo }  <br />
             Email: { user.email }  <br />

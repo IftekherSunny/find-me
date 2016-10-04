@@ -1,4 +1,11 @@
-import React from 'react';
+import _                from 'lodash';
+import React            from 'react';
+import { DragSource }   from 'react-dnd';
+import { DropTarget }   from 'react-dnd';
+import { TextSource,
+        TextTarget,
+        SourceConnect,
+        TargetConnect } from './../../services/react-dnd/text';
 
 /**
  * Create a new text component
@@ -11,19 +18,26 @@ class Text extends React.Component
      * @return {XML}
      */
     render() {
-        const { icon, onChange } = this.props;
+        const { icon, onChange, placeholder, value } = this.props;
 
-        return (
+        const {connectDragSource, connectDropTarget } = this.props;
+
+        return connectDragSource(connectDropTarget(
             <div className="from-group">
                 <div className="input-group">
-                    <span className="input-group-addon"><span className={ "glyphicon glyphicon-" + icon }></span></span>
+                    <span className="input-group-addon">
+                        <span className={ "glyphicon glyphicon-" + icon }></span>
+                    </span>
 
-                    <input className="form-control" placeholder={this.props.placeholder} onChange={onChange} />
+                    <input className="form-control" placeholder={placeholder} value={value} onChange={onChange} />
                 </div>
             </div>
-        )
+        ))
     }
 }
 
 
-export default Text;
+export default _.flow(
+    DragSource('TEXT', TextSource, SourceConnect),
+    DropTarget('TEXT', TextTarget, TargetConnect)
+)(Text);

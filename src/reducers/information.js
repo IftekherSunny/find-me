@@ -8,13 +8,23 @@ import Action   from './../actions/information';
  */
 const defaultState = {
     message: '',
-    facebookUsername: '',
-    twitterUsername: '',
+    socials: {
+        facebookUsername: '',
+        twitterUsername: ''
+    },
     mobileNo: '',
     email: '',
     embededCode: '',
     base64Code: Base64.encode(JSON.stringify({})),
-    showEmbededCode: false
+    showEmbededCode: false,
+    fields: {
+        facebookUsername: 'Facebook',
+        twitterUsername: 'Twitter'
+    },
+    socialFields: [
+        {target: 'facebookUsername'},
+        {target: 'twitterUsername'}
+    ]
 }
 
 
@@ -27,10 +37,28 @@ export default function information (state = defaultState, action = {}) {
             return Object.assign({}, state, { message: action.payload.message });
 
         case Action.FACEBOOK_USERNAME_CHANGED:
-            return Object.assign({}, state, { facebookUsername: action.payload.username });
+            return Object.assign({}, state, { socials: {
+                    facebookUsername: action.payload.username,
+                    twitterUsername: state.socials.twitterUsername,
+                    googleUsername: state.socials.googleUsername
+                }
+            });
 
         case Action.TWITTER_USERNAME_CHANGED:
-            return Object.assign({}, state, { twitterUsername: action.payload.username });
+            return Object.assign({}, state, { socials: {
+                    facebookUsername: state.socials.facebookUsername,
+                    twitterUsername: action.payload.username,
+                    googleUsername: state.socials.googleUsername
+                }
+            });
+
+        case Action.GOOGLE_USERNAME_CHANGED:
+            return Object.assign({}, state, { socials: {
+                facebookUsername: state.socials.facebookUsername,
+                twitterUsername: state.socials.twitterUsername,
+                googleUsername: action.payload.username
+            }
+            });
 
         case Action.MOBILE_NO_CHANGED:
             return Object.assign({}, state, { mobileNo: action.payload.mobileNo });
@@ -42,6 +70,25 @@ export default function information (state = defaultState, action = {}) {
             const embed = getStateWithEmbededCode(state);
 
             return Object.assign({}, state, embed);
+
+        case Action.SOCIAL_FIELDS_CHANGED:
+            return Object.assign({}, state, { socialFields: action.payload.socials});
+
+        case Action.ADDED_NEW_SOCIAL:
+            let socialFields = state.socialFields;
+            socialFields.push(action.payload.social);
+
+            let socials = state.socials;
+            socials[action.payload.social.target] = '';
+
+            return Object.assign({}, state, { socialFields: socialFields, socials: socials });
+
+        case Action.ADDED_NEW_FIELD:
+            let fields = state.fields;
+
+            fields[action.payload.social.target] = action.payload.social.label;
+
+            return Object.assign({}, state, { fields: fields });
 
         default:
             return state;
@@ -57,10 +104,14 @@ export default function information (state = defaultState, action = {}) {
 function getStateWithEmbededCode(state) {
     state.base64Code = Base64.encode(JSON.stringify({
         message:  state.message,
-        facebookUsername: state.facebookUsername,
-        twitterUsername: state.twitterUsername,
+        socials: {
+            facebookUsername: state.socials.facebookUsername,
+            twitterUsername: state.socials.twitterUsername
+        },
         mobileNo: state.mobileNo,
-        email: state.email
+        email: state.email,
+        fields: state.fields,
+        socialFields: state.socialFields
     }));
 
     state.embededCode = 'http://localhost:3000/embed.html?data=' + state.base64Code;
