@@ -104,10 +104,7 @@ export default function information (state = defaultState, action = {}) {
 function getStateWithEmbededCode(state) {
     state.base64Code = Base64.encode(JSON.stringify({
         message:  state.message,
-        socials: {
-            facebookUsername: state.socials.facebookUsername,
-            twitterUsername: state.socials.twitterUsername
-        },
+        socials: state.socials,
         mobileNo: state.mobileNo,
         email: state.email,
         fields: state.fields,
