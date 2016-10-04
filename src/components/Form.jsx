@@ -37,7 +37,7 @@ class Form extends React.Component
 
         const { changedIntro, changedMobileNo, changedEmail,
                 user, showEmbededCode } = this.props;
-console.log(user)
+
         return (
             <div className="col-md-6">
                 <textarea className="form-control" placeholder="Your intro" onChange={changedIntro} rows="6"></textarea>
